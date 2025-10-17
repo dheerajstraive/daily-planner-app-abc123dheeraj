@@ -1,0 +1,98 @@
+==
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Planner</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        .planner {
+            width: 100%;
+            max-width: 600px;
+        }
+        .time-slot {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: white;
+            border: 1px solid #ccc;
+            margin-bottom: 5px;
+            padding: 10px;
+        }
+        .time-slot.current {
+            background-color: #e7f3ff;
+        }
+        input[type="text"] {
+            flex-grow: 1;
+            margin: 0 10px;
+            padding: 5px;
+            border: 1px solid #ddd;
+        }
+        button {
+            padding: 5px 10px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Daily Planner</h1>
+    <h2 id="current-date"></h2>
+    <div class="planner" id="planner">
+        <!-- Time slots will be generated here -->
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const planner = document.getElementById('planner');
+            const currentDateElem = document.getElementById('current-date');
+            const currentTime = new Date();
+            const hours = [...Array(24).keys()];
+            
+            currentDateElem.textContent = currentTime.toDateString();
+
+            hours.forEach(hour => {
+                const timeSlot = document.createElement('div');
+                timeSlot.className = 'time-slot';
+                if(currentTime.getHours() === hour) {
+                    timeSlot.classList.add('current');
+                }
+
+                const timeLabel = document.createElement('span');
+                timeLabel.textContent = `${hour}:00`;
+
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.value = localStorage.getItem(`planner:${hour}`) || '';
+                
+                const saveBtn = document.createElement('button');
+                saveBtn.textContent = 'Save';
+                saveBtn.addEventListener('click', () => {
+                    localStorage.setItem(`planner:${hour}`, input.value);
+                });
+
+                timeSlot.appendChild(timeLabel);
+                timeSlot.appendChild(input);
+                timeSlot.appendChild(saveBtn);
+
+                planner.appendChild(timeSlot);
+            });
+        });
+    </script>
+</body>
+</html>
